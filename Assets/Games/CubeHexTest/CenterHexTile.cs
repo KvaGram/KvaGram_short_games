@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace KvaGames.Hex
 {
@@ -12,8 +13,7 @@ namespace KvaGames.Hex
 		public List<List<HexTile>> ringList; //holds refrence hex-ring by hex-ring outwards by QRS coordinates
 		public List<List<HexTile>> QrList; //holds refrence row by row by QR coordinates
 
-		public HexTile grassTilePrefab;
-		public HexTile rockTilePrefab;
+		public HexTile tilePrefab;
 
 		//creates or updates map whenever radius has been changed!
 		public void BuildMap()
@@ -21,40 +21,50 @@ namespace KvaGames.Hex
 			ringList = ringList ?? new List<List<HexTile>>(radius+1);
 
 			//Building map from rings
-			for (int i = 0; i < radius; i++)
+			for (int i = 0; i <= radius; i++)
 			{
-				ringList[i] = ringList[i] ?? BuildRing(i);
+				if (ringList.Count <= i)
+					ringList.Add(BuildRing(i));
 			}
+
+			HexTile[] HexList = gameObject.GetComponentsInChildren<HexTile>();
 			//setting up QrList of the tiles.
 			int length = radius*2 + 1;
 			QrList = new List<List<HexTile>>(length);
-			for (int i=0; i<length; i++)
+			//QrList.Add
+
+			for (int i=-radius; i<= radius; i++)
 			{
-				QrList[0] = new List<HexTile>(length);
+				List<HexTile> qList = HexList.Where((HexTile arg1) => arg1.HexCoord.q == i).OrderBy((HexTile arg1) => arg1.HexCoord.r).ToList();
+				QrList.Add(qList);
 			}
 
 		}
 		public List<HexTile> BuildRing(int r)
 		{
-			List<HexTile> ring = new List<HexTile>(r*6);
-			HexCoord tc = HexCoord.FLAT_UP * r;
-			HexTile t = Instantiate<HexTile>(grassTilePrefab, transform);
-			t.setupCoords(tc, this);
-			ring.Add(t);
-			if (r>0)
+			List<HexTile> ring = new List<HexTile>(r * 6);
+			if (r > 0)
 			{
-				for(HexDirectionFlat dir = HexDirectionFlat.UP; dir <= HexDirectionFlat.UP_RIGHT; dir++)
-				//for (int dir=0; dir < 6; dir++)
+				HexCoordCubic tc = HexCoordCubic.FLAT_DOWN_RIGHT * r;
+				HexTile t = Instantiate(tilePrefab, transform);
+				t.setupCoords(tc, this);
+				ring.Add(t);
+
+				//for(HexDirectionFlat dir = HexDirectionFlat.UP; dir <= HexDirectionFlat.UP_RIGHT; dir++)
+				for (int i = 0; i < 6; i++)
 				{
-					for(int j=0; j<r;j++)
+					for (int j = 0; j < r; j++)
 					{
-						tc = HexCoord.Neighbour(tc, dir);
-						t = Instantiate<HexTile>(grassTilePrefab, transform);
+						HexDirectionFlat dir = (HexDirectionFlat)i;
+						tc = HexCoordCubic.Neighbour(tc, dir);
+						t = Instantiate(tilePrefab, transform);
 						t.setupCoords(tc, this);
 						ring.Add(t);
 					}
 				}
 			}
+			else
+				ring.Add(center);
 			return ring;
 
 //function cube_ring(center, radius):
@@ -82,7 +92,7 @@ namespace KvaGames.Hex
 		// Use this for initialization
 		void Start( )
 		{
-
+			BuildMap();
 		}
 
 		// Update is called once per frame
