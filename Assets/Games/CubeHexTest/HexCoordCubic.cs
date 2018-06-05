@@ -52,6 +52,8 @@ namespace KvaGames.Hex
 			new HexCoordCubic { q = 1, r = 0, s = -1 }
 		};
 
+		public static HexCoordCubic ZERO = new HexCoordCubic { q = 0, r = 0, s = 0 };
+
 		public static HexCoordCubic FLAT_UP 			{ get { return directions[0]; } }
 		public static HexCoordCubic FLAT_UP_LEFT		{ get { return directions[1]; } }
 		public static HexCoordCubic FLAT_DOWN_LEFT		{ get { return directions[2]; } }

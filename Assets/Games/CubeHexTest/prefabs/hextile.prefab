@@ -129,6 +129,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 698621012f4317746bf1b79896b709b6, type: 2}
   - {fileID: 2100000, guid: 335573a79d366fe41af214c7fb97d3e8, type: 2}
   - {fileID: 2100000, guid: b9b8fbe68da2e4946b7cae1dbb2e0ffb, type: 2}
+  neighbours: []
   hexCoord:
     q: 0
     r: 0

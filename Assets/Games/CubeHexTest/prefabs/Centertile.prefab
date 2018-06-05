@@ -124,16 +124,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e629c34773bc04756a376e51f9c95722, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  terrain: 0
-  terrainMaterials:
-  - {fileID: 2100000, guid: 698621012f4317746bf1b79896b709b6, type: 2}
-  - {fileID: 2100000, guid: 335573a79d366fe41af214c7fb97d3e8, type: 2}
-  - {fileID: 2100000, guid: b9b8fbe68da2e4946b7cae1dbb2e0ffb, type: 2}
-  hexCoord:
-    q: 0
-    r: 0
-    s: 0
   radius: 2
   flatHead: 1
   tilePrefab: {fileID: 114925266372884074, guid: e567ea79bb3304baa95bd39747b00557,
     type: 2}
+  center: {fileID: 0}

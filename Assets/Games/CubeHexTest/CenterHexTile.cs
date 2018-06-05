@@ -2,11 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace KvaGames.Hex
 {
 	//todo: rename
-	public class CenterHexTile : HexTile
+	public class CenterHexTile : MonoBehaviour// : HexTile
 	{
 		public int radius = 3;
 		public bool flatHead = true; //todo: add support for tophead. Fornow: all code assumes flathead.
@@ -14,6 +15,56 @@ namespace KvaGames.Hex
 		public List<List<HexTile>> QrList; //holds refrence row by row by QR coordinates
 
 		public HexTile tilePrefab;
+
+		//-- recursive cunstructor
+		public HexTile center;
+		public void BuildMapRecursive()
+		{
+			center = Instantiate(tilePrefab);
+			center.setup(HexCoordCubic.ZERO, flatHead);
+			BuildTileRecursive(center);
+		}
+		public void BuildTileRecursive(HexTile t)
+		{
+			List<int> todo = new List<int>();
+			for (int i = 0; i < t.neighbours.Length; i++)
+			{
+				HexCoordCubic n = HexCoordCubic.Neighbour(t.HexCoord, i);
+				if(!t.neighbours[i] && LegalCoordinates(n))
+				{
+					HexTile tn = Instantiate(tilePrefab, transform);
+					tn.setup(n, flatHead);
+					int j = (i + 3) % 6;
+					t.neighbours[i] = tn;
+					tn.neighbours[j] = t;
+					todo.Add(i);
+				}
+			}
+			foreach(int i in todo)
+			{
+				HexTile tn = t.neighbours[i];
+
+				int nLeft =  (i+2) % 6;  //your i+2 is my i+1
+				int nRight = Mathf.Abs((i-2) % 6);  //your i-2 is my i-1
+				int nSelf =  (i+3) % 6;  //your i+3 is me
+				Debug.Log(string.Format("setting neighbour's neighbours {0} {1} {2}", nLeft, nRight, nSelf));
+				     
+				tn.neighbours[nLeft] = t.neighbours[(i + 1) % 6];
+				tn.neighbours[nRight] = t.neighbours[Mathf.Abs((i - 1) % 6)];
+				tn.neighbours[nSelf] = t;
+				BuildTileRecursive(tn);
+			}
+		}
+		public bool LegalCoordinates(HexCoordCubic n)
+		{
+			return n.Ring <= radius;
+		}
+		//end recursive cunstructor
+
+
+
+
+
 
 		//creates or updates map whenever radius has been changed!
 		public void BuildMap()
@@ -47,7 +98,7 @@ namespace KvaGames.Hex
 			{
 				HexCoordCubic tc = HexCoordCubic.FLAT_DOWN_RIGHT * r;
 				HexTile t = Instantiate(tilePrefab, transform);
-				t.setupCoords(tc, this);
+				t.setup(tc, this);
 				ring.Add(t);
 
 				//for(HexDirectionFlat dir = HexDirectionFlat.UP; dir <= HexDirectionFlat.UP_RIGHT; dir++)
@@ -58,7 +109,7 @@ namespace KvaGames.Hex
 						HexDirectionFlat dir = (HexDirectionFlat)i;
 						tc = HexCoordCubic.Neighbour(tc, dir);
 						t = Instantiate(tilePrefab, transform);
-						t.setupCoords(tc, this);
+						t.setup(tc, this);
 						ring.Add(t);
 					}
 				}
@@ -89,10 +140,13 @@ namespace KvaGames.Hex
 			}
 		}
 
+
+
 		// Use this for initialization
 		void Start( )
 		{
-			BuildMap();
+			//BuildMap();
+			BuildMapRecursive();
 		}
 
 		// Update is called once per frame
