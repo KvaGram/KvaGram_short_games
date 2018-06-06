@@ -6,7 +6,7 @@ using UnityEditor;
 
 namespace KvaGames.Hex
 {
-	[CustomEditor(typeof(HexGrid))]
+	[CustomEditor(typeof(HexGrid), true)]
 	public class HexGridEditor : Editor
 	{
 		public override void OnInspectorGUI()
