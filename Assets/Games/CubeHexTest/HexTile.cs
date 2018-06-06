@@ -16,7 +16,7 @@ namespace KvaGames.Hex
 
 		public void setup(HexCoordCubic hexCoord, bool flathead)
 		{
-			Debug.Log(string.Format("Setting up hex tile at q {0} r {1} s {2}", hexCoord.q, hexCoord.r, hexCoord.s));
+			//Debug.Log(string.Format("Setting up hex tile at q {0} r {1} s {2}", hexCoord.q, hexCoord.r, hexCoord.s));
 			//this.center = center;
 			HexCoord = hexCoord;
 			this.flathead = flathead;

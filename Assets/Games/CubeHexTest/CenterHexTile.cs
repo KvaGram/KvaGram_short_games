@@ -12,7 +12,8 @@ namespace KvaGames.Hex
 		public int radius = 3;
 		public bool flatHead = true; //todo: add support for tophead. Fornow: all code assumes flathead.
 		public List<List<HexTile>> ringList; //holds refrence hex-ring by hex-ring outwards by QRS coordinates
-		public List<List<HexTile>> QrList; //holds refrence row by row by QR coordinates
+		//public List<List<HexTile>> QrList; //holds refrence row by row by QR coordinates
+		public Dictionary<HexCoordAxial, HexTile> QrList;
 
 		public HexTile tilePrefab;
 
@@ -20,39 +21,45 @@ namespace KvaGames.Hex
 		public HexTile center;
 		public void BuildMapRecursive()
 		{
-			center = Instantiate(tilePrefab);
+			center = Instantiate(tilePrefab, transform);
+			center.name = "Center-tile";
 			center.setup(HexCoordCubic.ZERO, flatHead);
+
+			QrList = new Dictionary<HexCoordAxial, HexTile>
+			{
+				{ HexCoordCubic.ZERO, center }
+			};
+
 			BuildTileRecursive(center);
 		}
 		public void BuildTileRecursive(HexTile t)
 		{
 			List<int> todo = new List<int>();
+
 			for (int i = 0; i < t.neighbours.Length; i++)
 			{
 				HexCoordCubic n = HexCoordCubic.Neighbour(t.HexCoord, i);
-				if(!t.neighbours[i] && LegalCoordinates(n))
+				if (!t.neighbours[i] && LegalCoordinates(n))
 				{
-					HexTile tn = Instantiate(tilePrefab, transform);
-					tn.setup(n, flatHead);
-					int j = (i + 3) % 6;
-					t.neighbours[i] = tn;
-					tn.neighbours[j] = t;
-					todo.Add(i);
-				}
-			}
-			foreach(int i in todo)
-			{
-				HexTile tn = t.neighbours[i];
+					HexTile tn;
+					if (QrList.TryGetValue(n, out tn))
+					{
+						int j = (i + 3) % 6;
+						t.neighbours[i] = tn;
+						tn.neighbours[j] = t;
+					}
+					else
+					{
+						tn = Instantiate(tilePrefab, transform);
+						tn.setup(n, flatHead);
+						QrList.Add(n, tn);
 
-				int nLeft =  (i+2) % 6;  //your i+2 is my i+1
-				int nRight = Mathf.Abs((i-2) % 6);  //your i-2 is my i-1
-				int nSelf =  (i+3) % 6;  //your i+3 is me
-				Debug.Log(string.Format("setting neighbour's neighbours {0} {1} {2}", nLeft, nRight, nSelf));
-				     
-				tn.neighbours[nLeft] = t.neighbours[(i + 1) % 6];
-				tn.neighbours[nRight] = t.neighbours[Mathf.Abs((i - 1) % 6)];
-				tn.neighbours[nSelf] = t;
-				BuildTileRecursive(tn);
+						int j = (i + 3) % 6;
+						t.neighbours[i] = tn;
+						tn.neighbours[j] = t;
+						BuildTileRecursive(tn);
+					}
+				}
 			}
 		}
 		public bool LegalCoordinates(HexCoordCubic n)
@@ -67,30 +74,30 @@ namespace KvaGames.Hex
 
 
 		//creates or updates map whenever radius has been changed!
-		public void BuildMap()
-		{
-			ringList = ringList ?? new List<List<HexTile>>(radius+1);
+		//public void BuildMap()
+		//{
+		//	ringList = ringList ?? new List<List<HexTile>>(radius+1);
 
-			//Building map from rings
-			for (int i = 0; i <= radius; i++)
-			{
-				if (ringList.Count <= i)
-					ringList.Add(BuildRing(i));
-			}
+		//	//Building map from rings
+		//	for (int i = 0; i <= radius; i++)
+		//	{
+		//		if (ringList.Count <= i)
+		//			ringList.Add(BuildRing(i));
+		//	}
 
-			HexTile[] HexList = gameObject.GetComponentsInChildren<HexTile>();
-			//setting up QrList of the tiles.
-			int length = radius*2 + 1;
-			QrList = new List<List<HexTile>>(length);
-			//QrList.Add
+		//	HexTile[] HexList = gameObject.GetComponentsInChildren<HexTile>();
+		//	//setting up QrList of the tiles.
+		//	int length = radius*2 + 1;
+		//	QrList = new List<List<HexTile>>(length);
+		//	//QrList.Add
 
-			for (int i=-radius; i<= radius; i++)
-			{
-				List<HexTile> qList = HexList.Where((HexTile arg1) => arg1.HexCoord.q == i).OrderBy((HexTile arg1) => arg1.HexCoord.r).ToList();
-				QrList.Add(qList);
-			}
+		//	for (int i=-radius; i<= radius; i++)
+		//	{
+		//		List<HexTile> qList = HexList.Where((HexTile arg1) => arg1.HexCoord.q == i).OrderBy((HexTile arg1) => arg1.HexCoord.r).ToList();
+		//		QrList.Add(qList);
+		//	}
 
-		}
+		//}
 		public List<HexTile> BuildRing(int r)
 		{
 			List<HexTile> ring = new List<HexTile>(r * 6);

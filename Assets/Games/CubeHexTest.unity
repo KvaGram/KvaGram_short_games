@@ -236,7 +236,7 @@ Prefab:
     - target: {fileID: 114611269040987246, guid: 9b3235b8b447840e6a25f1213e96616e,
         type: 2}
       propertyPath: radius
-      value: 2
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4832745507337546, guid: 9b3235b8b447840e6a25f1213e96616e, type: 2}
       propertyPath: m_LocalPosition.y
