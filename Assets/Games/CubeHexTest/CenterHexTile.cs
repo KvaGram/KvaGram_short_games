@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace KvaGames.Hex
 {
-	//todo: rename
 	public class CenterHexTile : MonoBehaviour// : HexTile
 	{
 		public int radius = 3;
@@ -23,7 +22,7 @@ namespace KvaGames.Hex
 		{
 			center = Instantiate(tilePrefab, transform);
 			center.name = "Center-tile";
-			center.setup(HexCoordCubic.ZERO, flatHead);
+			center.Setup(HexCoordCubic.ZERO, flatHead);
 
 			QrList = new Dictionary<HexCoordAxial, HexTile>
 			{
@@ -34,8 +33,6 @@ namespace KvaGames.Hex
 		}
 		public void BuildTileRecursive(HexTile t)
 		{
-			List<int> todo = new List<int>();
-
 			for (int i = 0; i < t.neighbours.Length; i++)
 			{
 				HexCoordCubic n = HexCoordCubic.Neighbour(t.HexCoord, i);
@@ -51,7 +48,7 @@ namespace KvaGames.Hex
 					else
 					{
 						tn = Instantiate(tilePrefab, transform);
-						tn.setup(n, flatHead);
+						tn.Setup(n, flatHead);
 						QrList.Add(n, tn);
 
 						int j = (i + 3) % 6;
@@ -105,7 +102,7 @@ namespace KvaGames.Hex
 			{
 				HexCoordCubic tc = HexCoordCubic.FLAT_DOWN_RIGHT * r;
 				HexTile t = Instantiate(tilePrefab, transform);
-				t.setup(tc, this);
+				t.Setup(tc, this);
 				ring.Add(t);
 
 				//for(HexDirectionFlat dir = HexDirectionFlat.UP; dir <= HexDirectionFlat.UP_RIGHT; dir++)
@@ -116,7 +113,7 @@ namespace KvaGames.Hex
 						HexDirectionFlat dir = (HexDirectionFlat)i;
 						tc = HexCoordCubic.Neighbour(tc, dir);
 						t = Instantiate(tilePrefab, transform);
-						t.setup(tc, this);
+						t.Setup(tc, this);
 						ring.Add(t);
 					}
 				}

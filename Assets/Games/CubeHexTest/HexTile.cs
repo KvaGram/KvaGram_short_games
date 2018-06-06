@@ -1,26 +1,36 @@
 ﻿using UnityEngine;
 using System.Linq;
+using System;
+
 namespace KvaGames.Hex
 {
 	//TODO: move to seperate file
 	public class HexTile : MonoBehaviour
 	{
-		public TerrainType terrain;
+		[SerializeField]
+		private TerrainType terrain;
 		public Material[] terrainMaterials;
 		private bool flathead;
 		public HexTile[] neighbours;
+		private Renderer rend;
 
 		[SerializeField]
 		protected HexCoordCubic hexCoord;
 		//protected HexTile center;
 
-		public void setup(HexCoordCubic hexCoord, bool flathead)
+		public void Setup(HexCoordCubic hexCoord, bool flathead)
 		{
 			//Debug.Log(string.Format("Setting up hex tile at q {0} r {1} s {2}", hexCoord.q, hexCoord.r, hexCoord.s));
 			//this.center = center;
-			HexCoord = hexCoord;
 			this.flathead = flathead;
+			HexCoord = hexCoord;
 			neighbours = new HexTile[6];
+
+			rend = GetComponentInChildren<Renderer>();
+			if (flathead)
+				rend.transform.localRotation = Quaternion.Euler(-90, 30, 0);
+			else
+				rend.transform.localRotation = Quaternion.Euler(-90, 0, 0);
 		}
 
 		//public HexTile Center
@@ -41,13 +51,31 @@ namespace KvaGames.Hex
 					Debug.LogError("Invalid HexCoord value detected! Ignoring.", this);
 			}
 		}
+
+		public TerrainType Terrain
+		{
+			get
+			{
+				return terrain;
+			}
+
+			set
+			{
+				terrain = value;
+				Material m = terrainMaterials.ElementAtOrDefault((int)value);
+				if (!m)
+					return;
+				GetComponentInChildren<Renderer>().material = m;
+			}
+		}
+
 		void OnValidate()
 		{
-			Material m = terrainMaterials.ElementAtOrDefault((int)terrain);
-			if (!m)
-				return;
-			GetComponentInChildren<Renderer>().material = m;
+			Terrain = terrain;
+
+
 		}
+
 	}
 	public enum TerrainType{test, grass, rock}
 }

@@ -7,7 +7,6 @@ namespace KvaGames.Hex
 	public struct HexCoordAxial
 	{
 		public int q, r;
-		public bool flat;
 
 		public static implicit operator HexCoordCubic(HexCoordAxial a)
 		{
