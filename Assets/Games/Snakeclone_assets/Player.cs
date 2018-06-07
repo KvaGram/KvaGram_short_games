@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using KvaGames.Hex;
 using System.Linq;
+using UnityEngine.SceneManagement;
+
 namespace KvaGames.Snakeclone
 {
 	public class Player : Worm
@@ -195,6 +197,7 @@ namespace KvaGames.Snakeclone
 			if (validTiles.Count < 1)
 			{
 				Debug.Log("No place to add new target. Game won?");
+				OnGameOver();
 				return;
 			}
 			target = Instantiate(targetPrefab, transform.parent);
@@ -216,6 +219,7 @@ namespace KvaGames.Snakeclone
 			if(!nextTile || nextTile.Terrain == TerrainType.rock || IsColliding(nextTile))
 			{
 				Debug.Log("GAME OVER!");
+				OnGameOver();
 				return;
 			}
 
@@ -236,5 +240,10 @@ namespace KvaGames.Snakeclone
 			}
 			tickCount++;
 		}
+		public void OnGameOver()
+		{
+			SceneManager.LoadScene("Snake");
+		}
+
 	}
 }
