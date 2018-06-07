@@ -9,6 +9,8 @@ namespace KvaGames.Hex
 	//Can be inherited to create different shapes of different sizes.
 	public class HexGrid : MonoBehaviour
 	{
+		[SerializeField]
+		private HexTile tileZero;
 		public HexTile TilePrefab;
 		public bool flathead;
 		protected Dictionary<HexCoordAxial, HexTile> tileMap = new Dictionary<HexCoordAxial, HexTile>();
@@ -19,13 +21,22 @@ namespace KvaGames.Hex
 				return tileMap;
 			}
 		}
+
+		public HexTile TileZero
+		{
+			get
+			{
+				return tileZero;
+			}
+		}
+
 		public virtual void BuildMap()
 		{
 			CleanMap();
-			HexTile startTile;
-			BuildOrGetTile(HexCoordCubic.ZERO, out startTile);
+			BuildOrGetTile(HexCoordCubic.ZERO, out tileZero);
 
-			BuildMap2(startTile);
+
+			BuildMap2(tileZero);
 		}
 		protected virtual void BuildMap2(HexTile t)
 		{

@@ -15,7 +15,11 @@ namespace KvaGames.Hex
 		public override void OnTileBuilt(HexTile tile)
 		{
 			if (tile.HexCoord.Ring == size)
+			{
 				tile.Terrain = TerrainType.rock;
+				tile.transform.localScale = new Vector3(1, 1.8f, 1);
+			}
+			
 		}
 	}
 }

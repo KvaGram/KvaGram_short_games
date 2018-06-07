@@ -26,6 +26,8 @@ namespace KvaGames.Hex
 			HexCoord = hexCoord;
 			neighbours = new HexTile[6];
 
+			name = String.Format("Hextile QRS ( {0} {1} {2} )", hexCoord.q, hexCoord.r, hexCoord.s);
+
 			rend = GetComponentInChildren<Renderer>();
 			if (flathead)
 				rend.transform.localRotation = Quaternion.Euler(-90, 30, 0);
@@ -76,6 +78,14 @@ namespace KvaGames.Hex
 
 		}
 
+		public HexTile Neighbour(HexDirectionFlat dir)
+		{
+			return neighbours[(int)dir];
+		}
+		public HexTile Neighbour(HexDirectionPointy dir)
+		{
+			return neighbours[(int)dir];
+		}
 	}
 	public enum TerrainType{test, grass, rock}
 }
