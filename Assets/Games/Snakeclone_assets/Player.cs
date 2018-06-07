@@ -2,15 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 using KvaGames.Hex;
+using System.Linq;
 namespace KvaGames.Snakeclone
 {
-	public class Player : MonoBehaviour
+	public class Player : Worm
 	{
-		private HexTile currentTile;
-		private HexDirectionFlat dir;
-
 		[SerializeField]
 		private HexGridHexagon map;
+
+		[SerializeField]
+		private Target targetPrefab;
+		[SerializeField]
+		private Worm tailPrefab;
+
+
 
 		[SerializeField]
 		private KeyCode
@@ -22,6 +27,11 @@ namespace KvaGames.Snakeclone
 		moveUpRight = KeyCode.E,
 		rotateLeft = KeyCode.LeftArrow,
 		rotateRight = KeyCode.RightArrow;
+
+		[SerializeField]
+		Target target;
+		[SerializeField]
+		private List<Worm> tail;
 
 		[SerializeField]
 		private float tickLength = 0.5f;
@@ -57,35 +67,6 @@ namespace KvaGames.Snakeclone
 		//	}
 		//}
 
-		public HexTile CurrentTile
-		{
-			get
-			{
-				return currentTile;
-			}
-
-			set
-			{
-				currentTile = value;
-				transform.position = value.transform.position;
-			}
-		}
-
-		public HexDirectionFlat Dir
-		{
-			get
-			{
-				return dir;
-			}
-
-			set
-			{
-				
-				dir = value;
-				transform.localRotation = Quaternion.Euler(0, -60 * (int)dir, 0);
-			}
-		}
-
 		void Awake()
 		{
 			
@@ -93,7 +74,9 @@ namespace KvaGames.Snakeclone
 		// Use this for initialization
 		void Start( )
 		{
-			currentTile = map.TileZero;
+			CurrentTile = map.TileZero;
+			tail = new List<Worm>();
+			SetTarget();
 		}
 
 		// Update is called once per frame
@@ -152,14 +135,14 @@ namespace KvaGames.Snakeclone
 
 			else if(Input.GetKeyDown(rotateLeft))
 			{
-				int i = (int)dir;
+				int i = (int)Dir;
 				i++;
 				while (i >= 6) i -= 6;
 				Dir = (HexDirectionFlat)i;
 			}
 			else if (Input.GetKeyDown(rotateRight))
 			{
-				int i = (int)dir;
+				int i = (int)Dir;
 				i--;
 				while (i < 0) i += 6;
 				Dir = (HexDirectionFlat)i;
@@ -177,31 +160,74 @@ namespace KvaGames.Snakeclone
 		}
 		bool IsColliding(HexTile tile)
 		{
+			foreach(Worm w in tail)
+			{
+				if (w.CurrentTile == tile)
+					return true;
+			}
+
 			//todo see if collides with tail.
 			return false;
 		}
 		bool IsTarget(HexTile tile)
 		{
 			//todo see if tile has target
-			return false;
+			if (!target)
+				return false;
+			return target.CurrentTile == tile;
 		}
 		void ConsumeTarget()
 		{
-			//todo add target to tail
+			Destroy(target.gameObject);
+			target = null;
+			AddTail();
 		}
 		void SetTarget()
 		{
-			//todo add new target on map
+			//ahh.. the power of linq.
+			//Someone should make a parody game of Legend of Zelda,
+				//where the hero is named Linq, and all puzzles are about sorting and filtering lists.
+			List<HexTile> validTiles = map.GetComponentsInChildren<HexTile>()
+			                              .Where((arg1) => arg1.Terrain!=TerrainType.rock)
+			                              .Where((arg1) => !IsColliding(arg1))
+			                              .Where((arg1) => arg1 != CurrentTile)
+			                              .ToList();
+			if (validTiles.Count < 1)
+			{
+				Debug.Log("No place to add new target. Game won?");
+				return;
+			}
+			target = Instantiate(targetPrefab, transform.parent);
+			HexTile tile = validTiles.ElementAt(Random.Range(0, validTiles.Count));
+			target.CurrentTile = tile;
+
+		}
+		public void AddTail()
+		{
+			Worm w = Instantiate(tailPrefab, transform.parent);
+			tail.Add(w);
+			w.name = string.Format("Tail-segment #{0}", tail.Count);
+			w.CurrentTile = CurrentTile;
 		}
 
 		void GameTick ()
 		{
-			HexTile nextTile = CurrentTile.Neighbour(dir);
+			HexTile nextTile = CurrentTile.Neighbour(Dir);
 			if(!nextTile || nextTile.Terrain == TerrainType.rock || IsColliding(nextTile))
 			{
 				Debug.Log("GAME OVER!");
 				return;
 			}
+
+			for (int i = tail.Count - 1; i >= 0; i--)
+			{
+				Worm w = tail[i];
+				Worm wn = (i==0) ? this : tail[i-1];
+				w.Dir = wn.Dir;
+				w.CurrentTile = wn.CurrentTile;
+			}
+
+
 			CurrentTile = nextTile;
 			if (IsTarget(CurrentTile))
 			{

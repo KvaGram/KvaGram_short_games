@@ -3223,7 +3223,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: e49c257c320f85c44b854b6a5c68946f, type: 2}
+  - {fileID: 2100000, guid: 4f47b69c96e3e06438c10c907f7d4f98, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -27182,6 +27182,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   map: {fileID: 1435140373}
+  targetPrefab: {fileID: 114131669433551350, guid: ec4ed5cd90ef04a028faa94245cd389a,
+    type: 2}
+  tailPrefab: {fileID: 114849725140945434, guid: 61c1ffc46603141f9bdbba710a382e4f,
+    type: 2}
   moveUp: 119
   moveUpLeft: 113
   moveDownLeft: 97
@@ -27190,6 +27194,8 @@ MonoBehaviour:
   moveUpRight: 101
   rotateLeft: 276
   rotateRight: 275
+  target: {fileID: 0}
+  tail: []
   tickLength: 0.5
 --- !u!4 &2020897978
 Transform:
