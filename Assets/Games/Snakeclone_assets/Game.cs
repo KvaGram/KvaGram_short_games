@@ -1,32 +1,34 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using KvaGames.Hex;
 
 namespace KvaGames.Snakeclone
 {
 	public class Game : MonoBehaviour
 	{
-		public Rect tileSize = new Rect(0,0,1,1);
-		public Rect GameSize = new Rect(0,0,32,32);
-
-		private Player player;
+		//private HexGridHexagon map;
+		//private Player player;
 		
 
-		private void Awake( )
-		{
-			player = GetComponentInChildren<Player>();
-		}
-		// Use this for initialization
-		void Start( )
-		{
-			
-		}
+		//private void Awake( )
+		//{
+		//	map = GetComponentInChildren<HexGridHexagon>();
+		//	player = GetComponentInChildren<Player>();
+		//	HexTile starterTile = map.TileZero;
+		//	player.CurrentTile = starterTile;
+		//}
+		//// Use this for initialization
+		//void Start( )
+		//{
 
-		// Update is called once per frame
-		void Update( )
-		{
+		//}
 
-		}
+		//// Update is called once per frame
+		//void Update( )
+		//{
+
+		//}
 
 	}
 

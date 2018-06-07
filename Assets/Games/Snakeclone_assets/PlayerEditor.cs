@@ -14,7 +14,12 @@ namespace KvaGames.Snakeclone
 			base.OnInspectorGUI();
 			EditorGUILayout.LabelField("Next tick in: ", (player.TickLength - player.TickTime).ToString() + " Secunds");
 			EditorGUILayout.LabelField("Game Length: ", player.TickTime.ToString() + " Ticks");
-			EditorGUILayout.LabelField("Next tick is: ", player.HitStatus);
+			EditorGUILayout.LabelField("Player direction: ", player.Dir.ToString());
+			//EditorGUILayout.LabelField("Next tick is: ", player.HitStatus);
+			if(GUILayout.Button("Add tail"))
+			{
+				player.AddTail();
+			}
 		}
 	}
 }
