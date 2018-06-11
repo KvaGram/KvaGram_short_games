@@ -1,20 +1,20 @@
 ﻿using UnityEngine;
 namespace KvaGames.Asteroids
 {
-	[RequireComponent(typeof(Rigidbody2D))]
+	[RequireComponent(typeof(Rigidbody))]
 	public class Player : MonoBehaviour
 	{
-		private Rigidbody2D rb;
+		private Rigidbody rb;
 		private void Awake( )
 		{
-			rb = rb ?? GetComponent<Rigidbody2D>();
+			rb = rb ?? GetComponent<Rigidbody>();
 		}
 
 		private void Update( )
 		{
 			if(Input.GetMouseButton(1))
 			{
-				rb.AddForce(transform.right, ForceMode2D.Force);
+				rb.AddForce(transform.right, ForceMode.Acceleration);
 			}
 			if(Input.GetMouseButton(0))
 			{
@@ -37,17 +37,17 @@ namespace KvaGames.Asteroids
 			float tAngle = Mathf.Atan2(dir.y, dir.x)*Mathf.Rad2Deg;
 			float cAngle = transform.rotation.y;
 
-			float angleToRotate = tAngle - cAngle;
+			//float angleToRotate = tAngle - cAngle;
 			Quaternion targetRot = Quaternion.AngleAxis(tAngle, Vector3.forward);
 			Quaternion newRot = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime*5);
 			//string.Format("{0} - {1}", Input.mousePosition, Camera.main.WorldToScreenPoint(transform.position));
 
-			if (angleToRotate < 10)
-				rb.AddTorque(-1*Time.deltaTime);
-			else if(angleToRotate > 10)
-				rb.AddTorque(1*Time.deltaTime);
+			//if (angleToRotate < 10)
+			//	rb.AddTorque(-1*Time.deltaTime);
+			//else if(angleToRotate > 10)
+			//	rb.AddTorque(1*Time.deltaTime);
 
-			Debug.Log( string.Format("{0}", angleToRotate  ));
+			//Debug.Log( string.Format("{0}", angleToRotate  ));
 			transform.rotation = newRot;//Quaternion.Euler(0, 0, tAngle);
 			
 			//}

@@ -6,6 +6,8 @@ namespace KvaGames.Asteroids
 	public class Game : MonoBehaviour
 	{
 		private Player player;
+		private Asteroid[] asteroidPrefabs;
+
 		private void Awake( )
 		{
 			player = player ?? GetComponentInChildren<Player>();
@@ -15,8 +17,6 @@ namespace KvaGames.Asteroids
 		{
 			EventHandeler.AsteroidSpawn  += OnAsteroidSpawn;
 			EventHandeler.AsteroidDamage += OnAsteroidDamage;
-
-			
 		}
 
 		private void OnAsteroidSpawn(Asteroid asteroid)
