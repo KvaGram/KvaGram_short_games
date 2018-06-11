@@ -8,9 +8,29 @@ namespace KvaGames.Asteroids
 	{
 		[SerializeField]
 		private byte size;
-		private short health;
+		private int health;
+		public byte Size {get{return size;}}
+		public int Health {get{return health;}}
 
+		private Rigidbody rb;
 
+		private void Start( )
+		{
+			rb = rb ?? GetComponent<Rigidbody>();
+			rb.AddTorque(Random.insideUnitSphere, ForceMode.Impulse);
+			rb.AddForce(Random.insideUnitSphere, ForceMode.Impulse);
+			health = 10 * Size;
+			EventHandeler.TriggerAsteroidSpawn(this);
+		}
+		private void OnCollisionEnter(Collision collision)
+		{
 
+		}
+		public void AddDamage(int points)
+		{
+			health -= points;
+			EventHandeler.TriggerAsteroidDamage(this);
+
+		}
 	}
 }
