@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!181963792 &2655988077585873504
+Preset:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: test
+  m_TargetType:
+    m_NativeTypeID: 115
+    m_ManagedTypePPtr: {fileID: 0}
+    m_ManagedTypeFallback: 
+  m_Properties:
+  - target: {fileID: 0}
+    propertyPath: m_Name
+    value: AsteroidDivision
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_Script
+    value: "using UnityEngine;\nnamespace KvaGames.Asteroids\n{\n\t//when an asteroid
+      is destroyed, it may divide into smaller asteroids.\n\t//These structs explains
+      what size of asteroids devide into what.\n\t//unlisted asteroids simply disappear.\n\n\tclass
+      AsteroidDivision : ScriptableObject\n\t{\n\t\tpublic byte asteroidSize; //What
+      size of asteroid this entry is for.\n\t\tpublic AsteroidDivisionChance[] list;
+      //The possible outcomes from blowing up this size asteroid. if left empty, it
+      simply disappears.\n\t}\n\t[System.Serializable]\n\tstruct AsteroidDivisionChance\n\t{\n\t\tpublic
+      short weight; //Not all outcomes are equal. Higher weight mean more likely to
+      happen.\n\t\tpublic byte[] result; //The number of asteroids that comes from
+      this, and how big they are. Can be left empty.\n\t}\n}"
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_DefaultReferences.Array.size
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_Icon
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ExecutionOrder
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ClassName
+    value: AsteroidDivision
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_Namespace
+    value: KvaGames.Asteroids
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_AssemblyName
+    value: Assembly-CSharp.dll
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_IsEditorScript
+    value: 0
+    objectReference: {fileID: 0}

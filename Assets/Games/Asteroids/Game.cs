@@ -6,29 +6,47 @@ namespace KvaGames.Asteroids
 {
 	public class Game : MonoBehaviour
 	{
+		[SerializeField] new //hides obsolete legacy inhertience
+		private Transform camera;
+		[SerializeField]
+		private float CameraFollowSpeed = 45f;
 		[SerializeField]
 		private Player player;
+
+
 		[SerializeField]
 		private Asteroid[] asteroidPrefabs;
 		[SerializeField]
 		private Rect playarea;
 		[SerializeField]
-		private AsteroidDivisionList[] AsteroidDivisionTable;
+		private AsteroidLogicData[] AsteroidLogicTable;
 
-		private void Awake( )
+		private void Awake()
 		{
+			camera = camera ?? GetComponentInChildren<Camera>().transform.parent;
 			player = player ?? GetComponentInChildren<Player>();
 		}
 
-		private void Start( )
+		private void Start()
 		{
-			EventHandeler.AsteroidSpawn  += OnAsteroidSpawn;
+			EventHandeler.AsteroidSpawn += OnAsteroidSpawn;
 			EventHandeler.AsteroidDamage += OnAsteroidDamage;
+
+			SpawnAsteroid(12);
 		}
-		private void OnDisable( )
+		private void OnDisable()
 		{
-			EventHandeler.AsteroidSpawn  -= OnAsteroidSpawn;
+			EventHandeler.AsteroidSpawn -= OnAsteroidSpawn;
 			EventHandeler.AsteroidDamage -= OnAsteroidDamage;
+		}
+		private void Update()
+		{
+			//Vector3 ctop = player.transform.position - camera.position;
+			if(true)//(ctop.magnitude > 10)
+			{
+				//ctop = ctop.normalized;
+				camera.position = Vector3.Lerp(camera.position, player.transform.position, Time.deltaTime);
+			}
 		}
 		public void SpawnAsteroid(byte size, Vector3? source = null)
 		{
@@ -41,11 +59,13 @@ namespace KvaGames.Asteroids
 				Vector3 loc = new Vector3();
 				if (source == null)
 				{
+					int tries = 0;
 					do
 					{
 						loc.x = Random.Range(0f, playarea.width) + playarea.x;
 						loc.y = Random.Range(0f, playarea.height) + playarea.y;
-					} while (Vector3.Distance(loc, player.transform.position) < 100);
+						tries++;
+					} while (Vector3.Distance(loc, player.transform.position) < 100 && tries < 20);
 				}
 				else
 				{
@@ -74,36 +94,18 @@ namespace KvaGames.Asteroids
 			{
 				Vector3 source = asteroid.transform.position;
 				Destroy(asteroid.gameObject);
-				if(AsteroidDivisionTable.Any(d => d.size == asteroid.Size))
+				if (AsteroidLogicTable.Any(d => d.AsteroidSize == asteroid.Size))
 				{
-					int c;
-					AsteroidDivisionList list = AsteroidDivisionTable.Where(d => d.size == asteroid.Size).First();
-					foreach(AsteroidDivisionChance chance in list.list)
+					AsteroidLogicData data = AsteroidLogicTable.First(d => d.AsteroidSize == asteroid.Size);
+					byte[] newAsteroids = data.List;
+					foreach (byte n in newAsteroids)
 					{
-
+						SpawnAsteroid(n, source);
 					}
 				}
 			}
-			
+
 			//sound effects?
 		}
-
-		//when an asteroid is destroyed, it may divide into smaller asteroids.
-		//These structs explains what size of asteroids devide into what.
-		//unlisted asteroids simply disappear.
-
-		[System.Serializable]
-		struct AsteroidDivisionList
-		{
-			public byte size; //What size of asteroid this entry is for.
-			public AsteroidDivisionChance[] list; //The possible outcomes from blowing up this size asteroid. if left empty, it simply disappears.
-		}
-		[System.Serializable]
-		struct AsteroidDivisionChance
-		{
-			public short weight; //Not all outcomes are equal. Higher weight mean more likely to happen.
-			public byte[] result; //The number of asteroids that comes from this, and how big they are. Can be left empty.
-		}
 	}
-	
 }
