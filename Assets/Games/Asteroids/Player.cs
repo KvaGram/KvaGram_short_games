@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 namespace KvaGames.Asteroids
 {
+	[RequireComponent(typeof(ShipShield))]
 	[RequireComponent(typeof(Rigidbody))]
 	public class Player : MonoBehaviour
 	{
@@ -13,9 +14,14 @@ namespace KvaGames.Asteroids
 		[SerializeField]
 		private float maxSpeed = 50;
 		private Rigidbody rb;
+		private ShipShield shield;
+		private ParticleSystem engineEffect;
+
 		private void Awake( )
 		{
 			rb = rb ?? GetComponent<Rigidbody>();
+			shield = shield ?? GetComponentInChildren<ShipShield>();
+			engineEffect = engineEffect ?? GetComponentInChildren<ParticleSystem>();
 		}
 		void OnCollisionEnter(Collision collision)
 		{
@@ -27,6 +33,11 @@ namespace KvaGames.Asteroids
 					Debug.Log("GAME OVER");
 					Destroy(gameObject, 1);
 				}
+				if (Health <= 2)
+					shield.State = ShipShieldState.danger;
+				else
+					shield.State = ShipShieldState.safe;
+				shieldCooldownCounter = shieldCooldown;
 			}
 		}
 
@@ -37,6 +48,10 @@ namespace KvaGames.Asteroids
 		private float bulletCooldown = 0.2f;
 		private float bulletCooldownCounter = 0;
 
+		[SerializeField]
+		private float shieldCooldown = 0.5f;
+		private float shieldCooldownCounter = 0;
+
 		private void Update( )
 		{
 			//ensure z is always 0.
@@ -44,8 +59,16 @@ namespace KvaGames.Asteroids
 			pos.z = 0;
 			transform.position = pos;
 
-
-			bulletCooldownCounter += Time.deltaTime;
+			if (shieldCooldownCounter>0)
+			{
+				shieldCooldownCounter -= Time.deltaTime;
+				if (shieldCooldownCounter<=0)
+					shield.State = ShipShieldState.inactive;
+			}
+			if (bulletCooldownCounter>0)
+			{
+				bulletCooldownCounter -= Time.deltaTime;				
+			}
 
 			if(rb.velocity.sqrMagnitude > maxSpeed*maxSpeed)
 				rb.velocity = Vector3.ClampMagnitude(rb.velocity, 50);
@@ -54,12 +77,21 @@ namespace KvaGames.Asteroids
 				Vector3 boostDir = transform.right;
 				boostDir.z = 0;
 				rb.AddForce(boostDir.normalized*10f, ForceMode.Acceleration);
+				if(!engineEffect.isEmitting)
+					engineEffect.Play(true);
 			}
-			if(Input.GetMouseButton(0) && bulletCooldownCounter > bulletCooldown)
+			else if(engineEffect.isEmitting)
+			{
+				
+				engineEffect.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+			}
+			if(Input.GetMouseButton(0) && bulletCooldownCounter <= 0)
 			{
 				Bullet b = Instantiate(bulletPrefab);
 				b.transform.position = transform.position + transform.right * 1.3f;
 				b.Rb.velocity = rb.velocity + transform.right* 60;
+
+				bulletCooldownCounter = bulletCooldown;
 
 				//if (bullets[bulletIndex])
 				//	Destroy(bullets[bulletIndex].gameObject);

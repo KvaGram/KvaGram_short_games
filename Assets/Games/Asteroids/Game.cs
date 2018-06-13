@@ -9,7 +9,7 @@ namespace KvaGames.Asteroids
 		[SerializeField] new //hides obsolete legacy inhertience
 		private Transform camera;
 		[SerializeField]
-		private float CameraFollowSpeed = 45f;
+		private float CameraFollowSpeed = 5;
 		[SerializeField]
 		private Player player;
 
@@ -45,7 +45,7 @@ namespace KvaGames.Asteroids
 			if(true)//(ctop.magnitude > 10)
 			{
 				//ctop = ctop.normalized;
-				camera.position = Vector3.Lerp(camera.position, player.transform.position, Time.deltaTime);
+				camera.position = Vector3.Lerp(camera.position, player.transform.position, Time.deltaTime* CameraFollowSpeed);
 			}
 		}
 		public void SpawnAsteroid(byte size, Vector3? source = null)
