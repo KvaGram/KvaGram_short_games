@@ -736,8 +736,8 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 267451645}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 3}
-  m_LocalScale: {x: 0.0066, y: 0.0066, z: 0.0057}
+  m_LocalPosition: {x: 0, y: 0, z: 0.5}
+  m_LocalScale: {x: 0.001, y: 0.001, z: 0.001}
   m_Children:
   - {fileID: 1005684016}
   - {fileID: 1238257785}
@@ -1772,7 +1772,7 @@ GameObject:
   - component: {fileID: 572157706}
   - component: {fileID: 572157705}
   m_Layer: 0
-  m_Name: Particle System
+  m_Name: Main engine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8385,7 +8385,7 @@ Camera:
   far clip plane: 100
   field of view: 60
   orthographic: 1
-  orthographic size: 100
+  orthographic size: 80
   m_Depth: 1
   m_CullingMask:
     serializedVersion: 2
@@ -8541,34 +8541,6 @@ Transform:
   m_PrefabParentObject: {fileID: 4427962680350192, guid: 160192a15170843a2be51ff92bcb0fc9,
     type: 2}
   m_PrefabInternal: {fileID: 1380292432}
---- !u!1 &1405171771
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1405171772}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1405171772
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1405171771}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.4980111, y: -0.023718119, z: 0.2919159}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1421181724
 Prefab:
   m_ObjectHideFlags: 0
@@ -9717,7 +9689,7 @@ GameObject:
   - component: {fileID: 1883316928}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9780,9 +9752,14 @@ MonoBehaviour:
   health: 10
   bulletPrefab: {fileID: 114269725590095558, guid: 0b942620374694390b9ac2336d558000,
     type: 2}
+  bulletSpeed: 60
+  bombPrefab: {fileID: 114214884372548856, guid: 36c8324bca691a84fa4947ed97620e8d,
+    type: 2}
+  bombLanchSpeed: 5
   maxSpeed: 50
-  bulletCooldown: 0.2
-  shieldCooldown: 0.5
+  bulletCooldown: 0.05
+  shieldCooldown: 3
+  bombCooldown: 20
 --- !u!1 &1912857356
 GameObject:
   m_ObjectHideFlags: 0
@@ -10116,8 +10093,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 309.9, y: 257.4}
+  m_AnchoredPosition: {x: -0.000017166, y: -0.0012655}
+  m_SizeDelta: {x: 356.9, y: 295.45}
   m_Pivot: {x: 0.49999997, y: 0.49999997}
 --- !u!114 &2109026576
 MonoBehaviour:

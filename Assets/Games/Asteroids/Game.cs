@@ -42,7 +42,7 @@ namespace KvaGames.Asteroids
 		private void Update()
 		{
 			//Vector3 ctop = player.transform.position - camera.position;
-			if(true)//(ctop.magnitude > 10)
+			if(player)//(ctop.magnitude > 10)
 			{
 				//ctop = ctop.normalized;
 				camera.position = Vector3.Lerp(camera.position, player.transform.position, Time.deltaTime* CameraFollowSpeed);

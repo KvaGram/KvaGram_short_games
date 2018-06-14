@@ -12,6 +12,12 @@ namespace KvaGames.Asteroids
 		[SerializeField]
 		private Bullet bulletPrefab;
 		[SerializeField]
+		private float bulletSpeed = 60;
+		[SerializeField]
+		private Bomb bombPrefab;
+		[SerializeField]
+		private float bombLanchSpeed = 5;
+		[SerializeField]
 		private float maxSpeed = 50;
 		private Rigidbody rb;
 		private ShipShield shield;
@@ -25,32 +31,41 @@ namespace KvaGames.Asteroids
 		}
 		void OnCollisionEnter(Collision collision)
 		{
-			if (collision.gameObject.tag == "Enemy")
+			if (collision.gameObject.tag == "Enemy" && !IsShieldActive)
 			{
-				health--;
-				if (health <= 0)
-				{
-					Debug.Log("GAME OVER");
-					Destroy(gameObject, 1);
-				}
-				if (Health <= 2)
-					shield.State = ShipShieldState.danger;
-				else
-					shield.State = ShipShieldState.safe;
-				shieldCooldownCounter = shieldCooldown;
+				Damage(1);
 			}
 		}
-
-		private Bullet[] bullets = new Bullet[100];
-		private int bulletIndex = 0;
+		public void Damage(int points)
+		{
+			health -= points;
+			if (health <= 0)
+			{
+				Debug.Log("GAME OVER");
+				Destroy(gameObject, 1);
+			}
+			if (Health <= 2)
+				shield.State = ShipShieldState.danger;
+			else
+				shield.State = ShipShieldState.safe;
+			shieldCooldownCounter = shieldCooldown;
+		}
 
 		[SerializeField]
 		private float bulletCooldown = 0.2f;
 		private float bulletCooldownCounter = 0;
+		public bool IsBulletCooldown { get{ return bulletCooldownCounter > 0; } }
 
 		[SerializeField]
 		private float shieldCooldown = 0.5f;
 		private float shieldCooldownCounter = 0;
+		public bool IsShieldActive { get{ return shieldCooldownCounter > 0; } }
+
+		[SerializeField]
+		private float bombCooldown = 20.0f;
+		private float bombCooldownCounter = 0;
+		public bool IsBombCooldown { get { return bombCooldownCounter > 0; } }
+		
 
 		private void Update( )
 		{
@@ -59,15 +74,19 @@ namespace KvaGames.Asteroids
 			pos.z = 0;
 			transform.position = pos;
 
-			if (shieldCooldownCounter>0)
+			if (IsShieldActive)
 			{
 				shieldCooldownCounter -= Time.deltaTime;
-				if (shieldCooldownCounter<=0)
+				if (!IsShieldActive)
 					shield.State = ShipShieldState.inactive;
 			}
-			if (bulletCooldownCounter>0)
+			if (IsBulletCooldown)
 			{
 				bulletCooldownCounter -= Time.deltaTime;				
+			}
+			if(IsBombCooldown)
+			{
+				bombCooldownCounter -= Time.deltaTime;
 			}
 
 			if(rb.velocity.sqrMagnitude > maxSpeed*maxSpeed)
@@ -85,29 +104,21 @@ namespace KvaGames.Asteroids
 				
 				engineEffect.Stop(true, ParticleSystemStopBehavior.StopEmitting);
 			}
-			if(Input.GetMouseButton(0) && bulletCooldownCounter <= 0)
+			if(Input.GetMouseButton(0) && !IsBulletCooldown)
 			{
 				Bullet b = Instantiate(bulletPrefab);
 				b.transform.position = transform.position + transform.right * 1.3f;
-				b.Rb.velocity = rb.velocity + transform.right* 60;
+				b.Rb.velocity = rb.velocity + transform.right* bulletSpeed;
 
 				bulletCooldownCounter = bulletCooldown;
-
-				//if (bullets[bulletIndex])
-				//	Destroy(bullets[bulletIndex].gameObject);
-				//else
-				//	bullets[bulletIndex] = Instantiate(bulletPrefab);
-				
-				//bullets[bulletIndex].transform.position = transform.position + transform.right * 1.3f;
-				//bullets[bulletIndex].Rb.velocity = rb.velocity + transform.right* 60;
-				//bulletIndex++;
-				//if (bulletIndex >= 200)
-					//bulletIndex = 0;
-				//Destroy(b.gameObject, 120);
 			}
-			if(Input.GetMouseButton(2))
+			if(Input.GetMouseButton(2) && !IsBombCooldown)
 			{
-				//FIRE TORPEDO!!
+				Bomb b = Instantiate(bombPrefab);
+				b.transform.position = transform.position + transform.right * 1.3f;
+				b.Rb.velocity = rb.velocity + transform.right* bombLanchSpeed;
+
+				bombCooldownCounter = bombCooldown;
 			}
 			//if(Input.mousePresent)
 			//{
