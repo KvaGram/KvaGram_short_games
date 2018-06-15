@@ -540,9 +540,9 @@ MonoBehaviour:
   - {fileID: 114333620586283666, guid: 9d66608daea8441d3a873a167f9317b2, type: 2}
   playarea:
     serializedVersion: 2
-    x: -100
+    x: -200
     y: -100
-    width: 200
+    width: 400
     height: 200
   AsteroidLogicTable:
   - {fileID: 11400000, guid: 09f3098e2fe2240f394c70cc6bfe24cd, type: 2}
