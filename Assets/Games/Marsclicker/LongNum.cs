@@ -29,7 +29,7 @@ public class LongNum
 		Console.WriteLine(FormatNumber(100100000));
 	}
 
-	private static string FormatNumber(long num)
+	public static string FormatNumber(long num)
 	{
 		// Ensure number has max 3 significant digits (no rounding up can happen)
 		long i = (long)Math.Pow(10, (int)Math.Max(0, Math.Log10(num) - 2));
