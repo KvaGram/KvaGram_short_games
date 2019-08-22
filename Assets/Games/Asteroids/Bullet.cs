@@ -4,13 +4,19 @@ using UnityEngine;
 
 namespace KvaGames.Asteroids
 {
-	public class Bullet : MonoBehaviour
+	public class Bullet : AstroBehaviour
 	{
 		private float deathcount = 20;
 		private Rigidbody rb;
 		public Rigidbody Rb
 		{ get { if (rb) return Rb; rb = GetComponent<Rigidbody>(); return rb; } }
-		void OnCollisionEnter(Collision collision)
+
+        protected override void OutofboundsY(bool upper)
+        {
+            //throw new System.NotImplementedException();
+        }
+
+        void OnCollisionEnter(Collision collision)
 		{
 			Destroy(gameObject, 0.1f);
 		}
@@ -23,11 +29,14 @@ namespace KvaGames.Asteroids
 		}
 
 		// Update is called once per frame
-		void Update()
+		private new void Update()
 		{
 			deathcount -= Time.deltaTime;
 			if (deathcount < 0)
 				Destroy(gameObject);
+            else
+                base.Update();
+
 		}
 	}
 }

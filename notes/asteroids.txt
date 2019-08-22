@@ -1,0 +1,8 @@
+asteroids ideas:
+
+Wrap around X-axis
+	Use a system duplicate cameras overlapping to make it look seamless
+Asteroids hitting upper or lower bounds disappear and respawn somewhere else in the game area.
+Bullets hitting an asteroid must give off a particle effect.
+When the player hit the upper or lower bounds, they warned they are about to fall out of orbit.
+	A small grace-area of.. say.. 50 lengthunits out of bounds, the player will die

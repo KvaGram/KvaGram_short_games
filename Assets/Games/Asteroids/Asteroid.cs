@@ -4,7 +4,7 @@ using UnityEngine;
 namespace KvaGames.Asteroids
 {
 	[RequireComponent(typeof(Rigidbody))]
-	public class Asteroid : MonoBehaviour
+	public class Asteroid : AstroBehaviour
 	{
 		[SerializeField]
 		private byte size;
@@ -33,12 +33,19 @@ namespace KvaGames.Asteroids
 			EventHandeler.TriggerAsteroidDamage(this);
 
 		}
-		void Update()
+
+        private new void Update()
 		{
 			//ensure z is always 0.
 			Vector3 pos = transform.position;
 			pos.z = 0;
 			transform.position = pos;
+            base.Update();
 		}
-	}
+
+        protected override void OutofboundsY(bool upper)
+        {
+            //throw new System.NotImplementedException();
+        }
+    }
 }

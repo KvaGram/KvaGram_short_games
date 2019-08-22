@@ -3,8 +3,8 @@ namespace KvaGames.Asteroids
 {
 	[RequireComponent(typeof(ShipShield))]
 	[RequireComponent(typeof(Rigidbody))]
-	public class Player : MonoBehaviour
-	{
+	public class Player : AstroBehaviour
+    {
 		[SerializeField]
 		private int health;
 		public int Health { get { return health; }}
@@ -65,9 +65,9 @@ namespace KvaGames.Asteroids
 		private float bombCooldown = 20.0f;
 		private float bombCooldownCounter = 0;
 		public bool IsBombCooldown { get { return bombCooldownCounter > 0; } }
-		
 
-		private void Update( )
+
+        private new void Update()
 		{
 			//ensure z is always 0.
 			Vector3 pos = transform.position;
@@ -106,7 +106,7 @@ namespace KvaGames.Asteroids
 			}
 			if(Input.GetMouseButton(0) && !IsBulletCooldown)
 			{
-				Bullet b = Instantiate(bulletPrefab);
+				Bullet b = Instantiate(bulletPrefab, parent:controller.transform);
 				b.transform.position = transform.position + transform.right * 1.3f;
 				b.Rb.velocity = rb.velocity + transform.right* bulletSpeed;
 
@@ -114,7 +114,7 @@ namespace KvaGames.Asteroids
 			}
 			if(Input.GetMouseButton(2) && !IsBombCooldown)
 			{
-				Bomb b = Instantiate(bombPrefab);
+				Bomb b = Instantiate(bombPrefab, parent: controller.transform);
 				b.transform.position = transform.position + transform.right * 1.3f;
 				b.Rb.velocity = rb.velocity + transform.right* bombLanchSpeed;
 
@@ -145,8 +145,16 @@ namespace KvaGames.Asteroids
 
 			//Debug.Log( string.Format("{0}", angleToRotate  ));
 			transform.rotation = newRot;//Quaternion.Euler(0, 0, tAngle);
-			
-			//}
-		}
-	}
+
+            //}
+
+            base.Update();
+        }
+
+        protected override void OutofboundsY(bool upper)
+        {
+            //throw new System.NotImplementedException();
+            Debug.Log("WARNING! Out of bounds");
+        }
+    }
 }

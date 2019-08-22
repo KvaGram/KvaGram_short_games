@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace KvaGames.Asteroids
 {
-	public class Bomb : MonoBehaviour
+	public class Bomb : AstroBehaviour
 	{
 		private Rigidbody rb;
 		public Rigidbody Rb
@@ -27,7 +27,7 @@ namespace KvaGames.Asteroids
 		}
 
 		// Update is called once per frame
-		void Update( )
+		private new void Update( )
 		{
 			if (fuseTime > 0)
 			{
@@ -39,6 +39,7 @@ namespace KvaGames.Asteroids
 					Destroy(gameObject, 1f);
 				}
 			}
+            base.Update();
 		}
 		private void FixedUpdate( )
 		{
@@ -75,5 +76,10 @@ namespace KvaGames.Asteroids
 				}
 			}
 		}
-	}
+
+        protected override void OutofboundsY(bool upper)
+        {
+            //throw new System.NotImplementedException();
+        }
+    }
 }

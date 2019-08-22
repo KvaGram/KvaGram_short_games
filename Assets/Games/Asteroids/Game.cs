@@ -21,7 +21,9 @@ namespace KvaGames.Asteroids
 		[SerializeField]
 		private AsteroidLogicData[] AsteroidLogicTable;
 
-		private void Awake()
+        public Rect Playarea { get => playarea;}
+
+        private void Awake()
 		{
 			camera = camera ?? GetComponentInChildren<Camera>().transform.parent;
 			player = player ?? GetComponentInChildren<Player>();
