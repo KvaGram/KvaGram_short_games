@@ -29,18 +29,23 @@ namespace KvaGames.Asteroids
 
         protected abstract void OutofboundsY(bool upper);
         // Update is called once per frame
+        protected abstract void HandleWarped(Vector3 warp);
         protected void Update()
         {
             float lowerX = PlayArea.x;
             float upperX = PlayArea.width + PlayArea.x;
+            Vector3 warp = Vector3.zero;
             if (transform.position.x < lowerX)
             {
-                transform.position += Vector3.right * PlayArea.width;
+                warp = Vector3.right * PlayArea.width;
             }
             else if(transform.position.x > upperX)
             {
-                transform.position += Vector3.left * PlayArea.width;
+                warp = Vector3.left * PlayArea.width;
             }
+            transform.position += warp;
+            if (warp.sqrMagnitude > 0)
+                HandleWarped(warp);
 
             float lowerY = PlayArea.y;
             float upperY = PlayArea.height + PlayArea.y;

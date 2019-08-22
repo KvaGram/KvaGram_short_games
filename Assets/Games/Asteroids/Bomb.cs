@@ -26,8 +26,8 @@ namespace KvaGames.Asteroids
 
 		}
 
-		// Update is called once per frame
-		private new void Update( )
+        // Update is called once per frame
+        private new void Update()
 		{
 			if (fuseTime > 0)
 			{
@@ -78,6 +78,11 @@ namespace KvaGames.Asteroids
 		}
 
         protected override void OutofboundsY(bool upper)
+        {
+            //throw new System.NotImplementedException();
+        }
+
+        protected override void HandleWarped(Vector3 warp)
         {
             //throw new System.NotImplementedException();
         }

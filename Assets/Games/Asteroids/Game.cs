@@ -1,14 +1,19 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
+
 namespace KvaGames.Asteroids
 {
 	public class Game : MonoBehaviour
 	{
 		[SerializeField] new //hides obsolete legacy inhertience
 		private Transform camera;
-		[SerializeField]
+        [SerializeField]
+        private Transform ghostCamera;
+        [SerializeField]
 		private float CameraFollowSpeed = 5;
 		[SerializeField]
 		private Player player;
@@ -26,6 +31,7 @@ namespace KvaGames.Asteroids
         private void Awake()
 		{
 			camera = camera ?? GetComponentInChildren<Camera>().transform.parent;
+            //TODO: find some way to look for camera and ghost camera seperatly.
 			player = player ?? GetComponentInChildren<Player>();
 		}
 
@@ -48,7 +54,9 @@ namespace KvaGames.Asteroids
 			{
 				//ctop = ctop.normalized;
 				camera.position = Vector3.Lerp(camera.position, player.transform.position, Time.deltaTime* CameraFollowSpeed);
-			}
+                UpdateCamGhost();
+
+            }
 		}
 		public void SpawnAsteroid(byte size, Vector3? source = null)
 		{
@@ -109,5 +117,31 @@ namespace KvaGames.Asteroids
 
 			//sound effects?
 		}
-	}
+
+        internal void OnPlayerWarp(Vector3 warp)
+        {
+            camera.position += warp;
+            UpdateCamGhost();
+        }
+
+        private void UpdateCamGhost()
+        {
+            if (ghostCamera == null)
+                return;
+
+            float playerx = player.transform.position.x;
+            float lowerXDist = Mathf.Abs( Playarea.x - playerx); 
+            float upperXDist = Mathf.Abs(Playarea.width + Playarea.x - playerx);
+
+            if(lowerXDist < upperXDist)
+            {
+                ghostCamera.position = camera.position + playarea.width * Vector3.right;
+            }
+            else
+            {
+                ghostCamera.position = camera.position + playarea.width * Vector3.left;
+            }
+            
+        }
+    }
 }

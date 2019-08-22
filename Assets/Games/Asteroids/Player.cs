@@ -156,5 +156,10 @@ namespace KvaGames.Asteroids
             //throw new System.NotImplementedException();
             Debug.Log("WARNING! Out of bounds");
         }
+
+        protected override void HandleWarped(Vector3 warp)
+        {
+            controller.OnPlayerWarp(warp);
+        }
     }
 }

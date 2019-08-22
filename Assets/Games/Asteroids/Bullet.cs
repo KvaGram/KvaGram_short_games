@@ -15,6 +15,10 @@ namespace KvaGames.Asteroids
         {
             //throw new System.NotImplementedException();
         }
+        protected override void HandleWarped(Vector3 warp)
+        {
+            //throw new System.NotImplementedException();
+        }
 
         void OnCollisionEnter(Collision collision)
 		{
