@@ -52,8 +52,9 @@ namespace KvaGames.Asteroids
 			//Vector3 ctop = player.transform.position - camera.position;
 			if(player)//(ctop.magnitude > 10)
 			{
-				//ctop = ctop.normalized;
-				camera.position = Vector3.Lerp(camera.position, player.transform.position, Time.deltaTime* CameraFollowSpeed);
+                //ctop = ctop.normalized;
+                //camera.position = Vector3.Lerp(camera.position, player.transform.position, Time.deltaTime* CameraFollowSpeed);
+                camera.position = player.transform.position;
                 UpdateCamGhost();
 
             }
