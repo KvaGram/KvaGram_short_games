@@ -6,10 +6,7 @@ namespace KvaGames.Asteroids
 {
 	public class Bullet : AstroBehaviour
 	{
-		private float deathcount = 20;
-		private Rigidbody rb;
-		public Rigidbody Rb
-		{ get { if (rb) return Rb; rb = GetComponent<Rigidbody>(); return rb; } }
+		private float deathcount = 20.0f;
 
         protected override void OutofboundsY(bool upper)
         {
@@ -22,6 +19,7 @@ namespace KvaGames.Asteroids
 
         void OnCollisionEnter(Collision collision)
 		{
+            //TODO: spawn small explosion particle effect
 			Destroy(gameObject, 0.1f);
 		}
 
@@ -42,5 +40,10 @@ namespace KvaGames.Asteroids
                 base.Update();
 
 		}
-	}
+
+        protected override void HandleEscaped()
+        {
+            Destroy(gameObject);
+        }
+    }
 }

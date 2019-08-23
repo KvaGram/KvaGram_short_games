@@ -8,13 +8,12 @@ namespace KvaGames.Asteroids
 	{
 		[SerializeField]
 		private byte size;
-		private int health;
-		public byte Size {get{return size;}}
-		public int Health {get{return health;}}
 
-		private Rigidbody rb;
+        public byte Size {get{return size;}}
+        public int health;
 
-		private void Start( )
+
+        private void Awake( )
 		{
 			rb = rb ?? GetComponent<Rigidbody>();
 			rb.AddTorque(Random.insideUnitSphere, ForceMode.VelocityChange);
@@ -36,20 +35,28 @@ namespace KvaGames.Asteroids
 
         private new void Update()
 		{
+            base.Update();
+            if (escaped)
+                return;
 			//ensure z is always 0.
 			Vector3 pos = transform.position;
 			pos.z = 0;
 			transform.position = pos;
-            base.Update();
+            
 		}
+
 
         protected override void OutofboundsY(bool upper)
         {
-            //throw new System.NotImplementedException();
+            if (escaped)
+                return;
+            Escape();
         }
         protected override void HandleWarped(Vector3 warp)
         {
             //throw new System.NotImplementedException();
         }
+
+        protected override void HandleEscaped() => controller.ReplaceAsteroid(this);
     }
 }

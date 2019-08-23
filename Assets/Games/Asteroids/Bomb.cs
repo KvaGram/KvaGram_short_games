@@ -5,10 +5,6 @@ namespace KvaGames.Asteroids
 {
 	public class Bomb : AstroBehaviour
 	{
-		private Rigidbody rb;
-		public Rigidbody Rb
-		{ get { if (rb) return Rb; rb = GetComponent<Rigidbody>(); return rb; } }
-
 		[SerializeField]
 		float fuseTime = 20f;
 		[SerializeField]
@@ -79,12 +75,18 @@ namespace KvaGames.Asteroids
 
         protected override void OutofboundsY(bool upper)
         {
+            Escape();
             //throw new System.NotImplementedException();
         }
 
         protected override void HandleWarped(Vector3 warp)
         {
             //throw new System.NotImplementedException();
+        }
+
+        protected override void HandleEscaped()
+        {
+            Destroy(gameObject);
         }
     }
 }

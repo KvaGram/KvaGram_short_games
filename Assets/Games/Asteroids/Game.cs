@@ -18,6 +18,9 @@ namespace KvaGames.Asteroids
 		[SerializeField]
 		private Player player;
 
+        public GameObject upperWarningObj;
+        public GameObject lowerWarningObj;
+
 
 		[SerializeField]
 		private Asteroid[] asteroidPrefabs;
@@ -30,7 +33,8 @@ namespace KvaGames.Asteroids
 
         private void Awake()
 		{
-			camera = camera ?? GetComponentInChildren<Camera>().transform.parent;
+            activeWarnings = new List<WarningTimer>();
+            camera = camera ?? GetComponentInChildren<Camera>().transform.parent;
             //TODO: find some way to look for camera and ghost camera seperatly.
 			player = player ?? GetComponentInChildren<Player>();
 		}
@@ -56,10 +60,40 @@ namespace KvaGames.Asteroids
                 //camera.position = Vector3.Lerp(camera.position, player.transform.position, Time.deltaTime* CameraFollowSpeed);
                 camera.position = player.transform.position;
                 UpdateCamGhost();
-
+            }
+            foreach(WarningTimer wt in activeWarnings)
+            {
+                if(wt.Tick())
+                {
+                    EndWarning(wt.w);
+                    activeWarnings.Remove(wt);
+                    break;
+                }
             }
 		}
-		public void SpawnAsteroid(byte size, Vector3? source = null)
+
+        internal void ReplaceAsteroid(Asteroid old)
+        {
+            if (asteroidPrefabs.Any(a => a.Size == old.Size))
+            {
+                Vector3 loc = new Vector3();
+                int tries = 0;
+                do
+                {
+                    loc.x = Random.Range(0f, playarea.width) + playarea.x;
+                    loc.y = Random.Range(50f, playarea.height-50) + playarea.y;
+                    tries++;
+                } while (Physics.CheckSphere(loc, 25) && tries < 50);
+                List<Asteroid> list = asteroidPrefabs.Where(a => a.Size == old.Size).ToList();
+                Asteroid ast = Instantiate(list[Random.Range(0, list.Count)], loc, new Quaternion(), this.transform);
+                ast.health = old.health;
+
+                Destroy(old.gameObject);
+            }
+
+        }
+
+        public void SpawnAsteroid(byte size, Vector3? source = null)
 		{
 			if (size == 0)
 			{
@@ -76,7 +110,7 @@ namespace KvaGames.Asteroids
 						loc.x = Random.Range(0f, playarea.width) + playarea.x;
 						loc.y = Random.Range(0f, playarea.height) + playarea.y;
 						tries++;
-					} while (Vector3.Distance(loc, player.transform.position) < 100 && tries < 20);
+					} while (Vector3.Distance(loc, player.transform.position) < 100 && tries < 50);
 				}
 				else
 				{
@@ -101,7 +135,7 @@ namespace KvaGames.Asteroids
 		}
 		private void OnAsteroidDamage(Asteroid asteroid)
 		{
-			if (asteroid.Health <= 0)
+			if (asteroid.health <= 0)
 			{
 				Vector3 source = asteroid.transform.position;
 				Destroy(asteroid.gameObject);
@@ -143,6 +177,37 @@ namespace KvaGames.Asteroids
                 ghostCamera.position = camera.position + playarea.width * Vector3.left;
             }
             
+        }
+        protected List<WarningTimer> activeWarnings;
+        public void WarnPlayer(WarningType w)
+        {
+            if (activeWarnings.Any(a => a.w == w))
+                return;
+            WarningTimer timer = new WarningTimer(w, 20.0f);
+            activeWarnings.Add(timer);
+
+            switch (w)
+            {
+                case WarningType.LowerLimit:
+                    lowerWarningObj.SetActive(true);
+                    break;
+                case WarningType.UpperLimit:
+                    upperWarningObj.SetActive(true);
+                    break;
+            }
+
+        }
+        public void EndWarning(WarningType w)
+        {
+            switch (w)
+            {
+                case WarningType.LowerLimit:
+                    lowerWarningObj.SetActive(false);
+                    break;
+                case WarningType.UpperLimit:
+                    upperWarningObj.SetActive(false);
+                    break;
+            }
         }
     }
 }

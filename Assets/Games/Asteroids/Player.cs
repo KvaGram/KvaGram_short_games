@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 namespace KvaGames.Asteroids
 {
-	[RequireComponent(typeof(ShipShield))]
+    [RequireComponent(typeof(ShipShield))]
 	[RequireComponent(typeof(Rigidbody))]
-	public class Player : AstroBehaviour
+	public partial class Player : AstroBehaviour
     {
 		[SerializeField]
 		private int health;
@@ -19,7 +19,6 @@ namespace KvaGames.Asteroids
 		private float bombLanchSpeed = 5;
 		[SerializeField]
 		private float maxSpeed = 50;
-		private Rigidbody rb;
 		private ShipShield shield;
 		private ParticleSystem engineEffect;
 
@@ -154,12 +153,20 @@ namespace KvaGames.Asteroids
         protected override void OutofboundsY(bool upper)
         {
             //throw new System.NotImplementedException();
-            Debug.Log("WARNING! Out of bounds");
+            if (upper)
+                controller.WarnPlayer(WarningType.UpperLimit);
+            else
+                controller.WarnPlayer(WarningType.LowerLimit);
         }
 
         protected override void HandleWarped(Vector3 warp)
         {
             controller.OnPlayerWarp(warp);
+        }
+
+        protected override void HandleEscaped()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
