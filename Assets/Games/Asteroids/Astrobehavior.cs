@@ -16,6 +16,12 @@ namespace KvaGames.Asteroids
         public bool escaped = false;
         private Vector3 escapeVel = Vector3.zero;
 
+        private bool atUpperY = false;
+        private bool atLowerY = false;
+        public bool AtUpperY { get => atUpperY; }
+        public bool AtLowerY { get => atLowerY; }
+
+
         Rect PlayArea { get => Controller.Playarea; }
         public Game Controller {get{
                 if (controller == null)
@@ -67,9 +73,13 @@ namespace KvaGames.Asteroids
 
             float lowerY = PlayArea.y;
             float upperY = PlayArea.height + PlayArea.y;
-            if (transform.position.y < lowerY)
+
+            atLowerY = transform.position.y < lowerY;
+            atUpperY = transform.position.y > upperY;
+
+            if (AtLowerY)
                 OutofboundsY(false);
-            else if (transform.position.y > upperY)
+            else if (AtUpperY)
                 OutofboundsY(true);
         }
         public void Escape()

@@ -22,6 +22,10 @@ namespace KvaGames.Asteroids
 		private ShipShield shield;
 		private ParticleSystem engineEffect;
 
+        [SerializeField]
+        private float orbitGrace = 5.0f; //secunds before player loose orbit.
+        private float orbitTimer = 0.0f; //player-death once timer reach above. Resets once out of dangerzone.
+
 		private void Awake( )
 		{
 			rb = rb ?? GetComponent<Rigidbody>();
@@ -40,9 +44,9 @@ namespace KvaGames.Asteroids
 			health -= points;
 			if (health <= 0)
 			{
-				Debug.Log("GAME OVER");
-				Destroy(gameObject, 1);
-			}
+				Destroy(gameObject);
+                controller.OnGameOver();
+            }
 			if (Health <= 2)
 				shield.State = ShipShieldState.danger;
 			else
@@ -68,8 +72,17 @@ namespace KvaGames.Asteroids
 
         private new void Update()
 		{
-			//ensure z is always 0.
-			Vector3 pos = transform.position;
+            if (escaped)
+            {
+                if (engineEffect.isEmitting)
+                    engineEffect.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+                EscapeUpdate();
+                return;
+            }
+
+
+            //ensure z is always 0.
+            Vector3 pos = transform.position;
 			pos.z = 0;
 			transform.position = pos;
 
@@ -147,7 +160,21 @@ namespace KvaGames.Asteroids
 
             //}
 
+            //If player is in either dangerzones:
+            if (AtUpperY || AtLowerY)
+                orbitTimer += Time.deltaTime;
+
             base.Update();
+
+            //If player was in danger, but is no longer in a dangerzone:
+            if (orbitTimer > 0 && !(AtUpperY || AtLowerY))
+                orbitTimer = 0;
+
+            //If the player has passed the orbital grace period, then they will lose orbit, and the game will end.
+            if(orbitTimer >= orbitGrace)
+            {
+                Escape();
+            }
         }
 
         protected override void OutofboundsY(bool upper)
@@ -166,7 +193,7 @@ namespace KvaGames.Asteroids
 
         protected override void HandleEscaped()
         {
-            throw new System.NotImplementedException();
+            controller.OnGameOver();
         }
     }
 }

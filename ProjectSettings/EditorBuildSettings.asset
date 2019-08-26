@@ -4,4 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Games/Asteroids.unity
+    guid: a9bd4a1af0f6bfc4480252a9976bac73
+  m_configObjects: {}

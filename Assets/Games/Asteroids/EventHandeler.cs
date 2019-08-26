@@ -30,17 +30,11 @@ namespace KvaGames.Asteroids
 		public delegate void AsteroidEventHandler(Asteroid asteroid);
 		public static event AsteroidEventHandler AsteroidDamage;
 		public static event AsteroidEventHandler AsteroidSpawn;
+        public delegate void BulletEventHandler(Bullet bullet, Collision collision);
+        public static event BulletEventHandler BulletHit;
 
-		public static void TriggerAsteroidDamage(Asteroid asteroid)
-		{
-			if (AsteroidDamage != null)
-				AsteroidDamage(asteroid);
-		}
-		public static void TriggerAsteroidSpawn(Asteroid asteroid)
-		{
-			if (AsteroidSpawn != null)
-				AsteroidSpawn(asteroid);
-
-		}
-	}
+        public static void TriggerAsteroidDamage(Asteroid asteroid) => AsteroidDamage?.Invoke(asteroid);
+        public static void TriggerAsteroidSpawn(Asteroid asteroid) => AsteroidSpawn?.Invoke(asteroid);
+        public static void TriggerBulletHit(Bullet bullet, Collision collision) => BulletHit?.Invoke(bullet, collision);
+    }
 }

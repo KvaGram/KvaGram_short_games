@@ -5,8 +5,8 @@ namespace KvaGames.Asteroids
 {
 	public class Bomb : AstroBehaviour
 	{
-		[SerializeField]
-		float fuseTime = 20f;
+        public float fuselength = 20f;
+		private float fuseTimer = 0;
 		[SerializeField]
 		float radius = 100f;
 		[SerializeField]
@@ -14,33 +14,42 @@ namespace KvaGames.Asteroids
 		[SerializeField]
 		int baseDamage = 1000;
 
+        private bool detonated = false;
+
+
+        [SerializeField]
+        private Light[] warnlights;
+        [SerializeField]
+        private GameObject mesh;
 		[SerializeField]
 		private GameObject radarObject;
 		// Use this for initialization
 		void Start( )
 		{
-
-		}
+            fuseTimer = 0;
+            //warnlight = warnlight ?? GetComponentInChildren<Light>();
+            
+        }
 
         // Update is called once per frame
         private new void Update()
 		{
-			if (fuseTime > 0)
+            if (detonated)
+                return;
+			fuseTimer += Time.deltaTime;
+			if (fuseTimer >= fuselength)
 			{
-				fuseTime -= Time.deltaTime;
-				if (fuseTime<=0)
-				{
-					Detonate();
-					radarObject.transform.localScale = new Vector3(radius, radius, radius);
-					Destroy(gameObject, 1f);
-				}
+				Detonate(); 
 			}
+            float freq = fuseTimer / fuselength * 10;
+            foreach (Light warnlight in warnlights)
+                warnlight.color = Color.white * Mathf.PingPong(fuseTimer*freq, 1);
             base.Update();
 		}
 		private void FixedUpdate( )
 		{
-			if(Mathf.CeilToInt(fuseTime) > 0)
-				Debug.Log(Mathf.CeilToInt(fuseTime));
+			//if(Mathf.CeilToInt(fuseTimer) > 0)
+			//	Debug.Log(Mathf.CeilToInt(fuseTimer));
 		}
 		public void Detonate()
 		{
@@ -71,7 +80,18 @@ namespace KvaGames.Asteroids
 					plr.Damage(1); //being kind to the player here...
 				}
 			}
-		}
+
+            //Enlarges the radar object so to visualize the boom
+            radarObject.transform.localScale = new Vector3(radius, radius, radius);
+            //disables the ridigbody
+            rb.isKinematic = true;
+            //hides the normal mesh
+            Destroy(mesh);
+            //sets the rest of the object to die soon.
+            Destroy(gameObject, 1f);
+
+            detonated = true;
+        }
 
         protected override void OutofboundsY(bool upper)
         {

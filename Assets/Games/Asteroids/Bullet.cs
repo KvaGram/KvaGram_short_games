@@ -20,6 +20,7 @@ namespace KvaGames.Asteroids
         void OnCollisionEnter(Collision collision)
 		{
             //TODO: spawn small explosion particle effect
+            EventHandeler.TriggerBulletHit(this, collision);
 			Destroy(gameObject, 0.1f);
 		}
 

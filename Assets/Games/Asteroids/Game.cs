@@ -17,6 +17,13 @@ namespace KvaGames.Asteroids
 		private float CameraFollowSpeed = 5;
 		[SerializeField]
 		private Player player;
+        [SerializeField]
+        private BulletEffect bulletEffect;
+
+#if UNITY_EDITOR
+        public bool GameOver = false;
+#endif
+
 
         public GameObject upperWarningObj;
         public GameObject lowerWarningObj;
@@ -37,7 +44,9 @@ namespace KvaGames.Asteroids
             camera = camera ?? GetComponentInChildren<Camera>().transform.parent;
             //TODO: find some way to look for camera and ghost camera seperatly.
 			player = player ?? GetComponentInChildren<Player>();
-		}
+            bulletEffect = bulletEffect ?? GetComponentInChildren<BulletEffect>();
+
+        }
 
 		private void Start()
 		{
@@ -197,6 +206,21 @@ namespace KvaGames.Asteroids
             }
 
         }
+
+        internal void OnGameOver()
+        {
+#if UNITY_EDITOR
+            if (GameOver)
+                return;
+            Debug.Log("GAME OVER");
+            GameOver = true;
+            UnityEditor.EditorApplication.isPaused = true;
+#else
+            //#TODO: Add in a game over message.
+            Application.Quit(0);
+#endif
+        }
+
         public void EndWarning(WarningType w)
         {
             switch (w)
